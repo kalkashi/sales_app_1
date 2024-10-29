@@ -1,10 +1,8 @@
 package org.lbg.c4;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 
 /**
@@ -22,14 +20,22 @@ public class App {
         Prompt vatPrompt = new VatPrompt();
         Prompt quantityPrompt = new QuantityPrompt();
 
+        Scanner scanner = new Scanner(System.in);
+
+        Reader costReader = new CostReader(scanner);
+
+        // reader for vat + quantity
+        Reader combinedReader = new CombinedReader(scanner);
+
+
         while(true) {
-            double cost = costPrompt.printPrompt();
+            double cost = costReader.readStuff(costPrompt);
             if(cost == -1){
                 System.out.println("We are quitting your application , your total cost for today is: " + totalCostWithVat);
                 break;
             }
-            double vatRate = vatPrompt.printPrompt();
-            double quantity = quantityPrompt.printPrompt();
+            double vatRate = combinedReader.readStuff(vatPrompt);
+            double quantity = combinedReader.readStuff(quantityPrompt);
 
             Item item = new Item(cost,vatRate,(int)quantity);
             items.add(item);
