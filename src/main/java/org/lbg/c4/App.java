@@ -15,43 +15,38 @@ public class App {
 
     public static void main( String[] args )
     {
-//        Scanner scanner = new Scanner(System.in);
         List<Item> items = new ArrayList<>();
-        BufferedReader reader =  new BufferedReader(new InputStreamReader(System.in));
-        double totalCost =0;
+        double totalCostWithVat = 0;
 
-        String input;
+        Prompt costPrompt = new CostPrompt();
+        Prompt vatPrompt = new VatPrompt();
+        Prompt quantityPrompt = new QuantityPrompt();
 
-        while(true){
-            try{
-                System.out.print("Enter the cost of the item or enter quit: ");
-                input = reader.readLine();
-                if(input.equals("quit")){
-                    System.out.printf("The total price including VAT is: %.2f%n", totalCost);
-                    break;
-                }
-                double cost = Double.parseDouble(input);
-
-                System.out.print("Enter the VAT rate (%): ");
-                String vatRatestr = reader.readLine();
-                double vatRate = Double.parseDouble(vatRatestr);
-
-                System.out.print("Enter the Quantity: ");
-                String quantitystr = reader.readLine();
-                int quantity = Integer.parseInt(quantitystr);
-
-                Item item = new Item(cost,vatRate,quantity);
-                items.add(item);
-
-                totalCost+=item.calcTotalCost(cost,vatRate,quantity);
-
-                System.out.printf("The total price for task 5 including VAT is: %.2f%n", totalCost);
+        while(true) {
+            double cost = costPrompt.printPrompt();
+            if(cost == -1){
+                System.out.println("We are quitting your application , your total cost for today is: " + totalCostWithVat);
+                break;
             }
-            catch (IOException e){
-                System.out.println("Unhandled exception");
-            }
+            double vatRate = vatPrompt.printPrompt();
+            double quantity = quantityPrompt.printPrompt();
+
+            Item item = new Item(cost,vatRate,(int)quantity);
+            items.add(item);
+
+            totalCostWithVat = totalCostWithVat + item.calcTotalCost(cost,vatRate,(int)quantity);
+            System.out.printf("The total price for task 5 including VAT is: %.2f%n", totalCostWithVat);
 
         }
+
+
+
+
+
+
+
+
+
 
     }
 }
